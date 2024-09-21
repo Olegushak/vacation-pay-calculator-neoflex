@@ -1,6 +1,5 @@
 package ru.neostudy.calculator.utils.validator;
 
-import org.springframework.stereotype.Component;
 import ru.neostudy.calculator.dto.RequestParametersDto;
 import ru.neostudy.calculator.utils.validator.anotations.ValidParameter;
 
