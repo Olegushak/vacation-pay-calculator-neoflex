@@ -1,16 +1,14 @@
 package ru.neostudy.calculator.exception.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@NoArgsConstructor(force = true)
+@Data
 @AllArgsConstructor
-@Setter
+@NoArgsConstructor(force = true)
 public class ValidationErrorResponse {
 
     private final List<Violation> violations;

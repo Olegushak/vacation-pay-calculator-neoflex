@@ -1,6 +1,4 @@
-package ru.neostudy.calculator.utils.validator.anotations;
-
-import ru.neostudy.calculator.utils.validator.ParamValidator;
+package ru.neostudy.calculator.validator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -12,7 +10,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ParamValidator.class)
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidParameter {
+public @interface RequestTypeValidation {
 
     String message() default "Неверные параметры";
 
