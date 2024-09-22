@@ -1,7 +1,6 @@
 package ru.neostudy.calculator.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +16,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@Tag(name="Calculator Controller", description="Controller has a GET/method for calculation")
+@Tag(name = "Calculator Controller", description = "Controller has a GET/method for calculation")
 public class CalculatorController {
 
     private final CalculatorService vacationPayCalculatorService;
@@ -26,7 +25,9 @@ public class CalculatorController {
             summary = "Calculation"
     )
     @GetMapping("/calculate")
-    public VacationPaymentResponse calculateVacationPayment(@Valid @RequestTypeValidation @Parameter(description = "Vacation request object including parameters") VacationPaymentRequest request) {
+    public VacationPaymentResponse calculateVacationPayment(@Valid
+                                                            @RequestTypeValidation
+                                                            VacationPaymentRequest request) {
         return vacationPayCalculatorService.calculate(request);
     }
 }

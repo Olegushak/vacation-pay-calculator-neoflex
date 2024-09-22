@@ -6,11 +6,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import ru.neostudy.calculator.dto.VacationPaymentRequest;
 import ru.neostudy.calculator.dto.VacationPaymentResponse;
 import ru.neostudy.calculator.exception.response.ValidationErrorResponse;
@@ -27,39 +24,50 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CalculatorControllerTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private WebTestClient webTestClient;
 
     @ParameterizedTest
     @MethodSource("requestValidArgumentsProvider")
-    void calculateShouldReturnValidResponse(VacationPaymentRequest params, String result) {
-        String url = UriComponentsBuilder.fromUriString("/calculate")
-                .queryParam("avgSalary", params.getAvgSalary())
-                .queryParam("vacationDays", params.getVacationDays())
-                .queryParam("beginDate", params.getBeginDate())
-                .queryParam("endDate", params.getEndDate())
-                .toUriString();
-        ResponseEntity<VacationPaymentResponse> vacationPay = restTemplate.getForEntity(url, VacationPaymentResponse.class);
-
-        assertEquals(HttpStatus.OK, vacationPay.getStatusCode());
-        assertEquals(MediaType.APPLICATION_JSON, vacationPay.getHeaders().getContentType());
-        assertEquals(result, Objects.requireNonNull(vacationPay.getBody()).getAmount());
+    void calculateShouldReturnValidResponse(VacationPaymentRequest params, String amount) {
+        webTestClient.get().uri(uriBuilder -> uriBuilder
+                        .path("/calculate")
+                        .queryParam("avgSalary", params.getAvgSalary())
+                        .queryParam("vacationDays", params.getVacationDays())
+                        .queryParam("beginDate", params.getBeginDate())
+                        .queryParam("endDate", params.getEndDate())
+                        .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(VacationPaymentResponse.class)
+                .consumeWith(body -> {
+                    assertEquals(amount,
+                            Objects.requireNonNull(body.getResponseBody())
+                                    .getAmount());
+                });
     }
 
     @ParameterizedTest
     @MethodSource("requestWrongArgumentsProvider")
     void calculateShouldReturnErrorResponse(VacationPaymentRequest params, String message) {
-        String url = UriComponentsBuilder.fromUriString("/calculate")
-                .queryParam("avgSalary", params.getAvgSalary())
-                .queryParam("vacationDays", params.getVacationDays())
-                .queryParam("beginDate", params.getBeginDate())
-                .queryParam("endDate", params.getEndDate())
-                .toUriString();
-
-        ResponseEntity<ValidationErrorResponse> validationErrorResponse = restTemplate.getForEntity(url, ValidationErrorResponse.class);
-
-        assertEquals(HttpStatus.BAD_REQUEST, validationErrorResponse.getStatusCode());
-        assertEquals(MediaType.APPLICATION_JSON, validationErrorResponse.getHeaders().getContentType());
-        assertEquals(message, Objects.requireNonNull(validationErrorResponse.getBody()).getViolations().get(0).getMessage());
+        webTestClient.get().uri(uriBuilder -> uriBuilder
+                        .path("/calculate")
+                        .queryParam("avgSalary", params.getAvgSalary())
+                        .queryParam("vacationDays", params.getVacationDays())
+                        .queryParam("beginDate", params.getBeginDate())
+                        .queryParam("endDate", params.getEndDate())
+                        .build())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(ValidationErrorResponse.class)
+                .consumeWith(body -> {
+                    assertEquals(message,
+                            Objects.requireNonNull(body.getResponseBody())
+                                    .getViolations()
+                                    .get(0)
+                                    .getMessage());
+                });
     }
 
     static Stream<? extends Arguments> requestValidArgumentsProvider() {
