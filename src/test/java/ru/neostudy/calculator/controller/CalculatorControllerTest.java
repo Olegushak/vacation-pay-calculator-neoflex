@@ -9,15 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import ru.neostudy.calculator.dto.VacationPaymentRequest;
-import ru.neostudy.calculator.dto.VacationPaymentResponse;
-import ru.neostudy.calculator.exception.response.ValidationErrorResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Unit testing for CalculatorControllerTest")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,14 +32,14 @@ public class CalculatorControllerTest {
                         .queryParam("endDate", params.getEndDate())
                         .build())
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(VacationPaymentResponse.class)
-                .consumeWith(body -> {
-                    assertEquals(amount,
-                            Objects.requireNonNull(body.getResponseBody())
-                                    .getAmount());
-                });
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.amount")
+                .isEqualTo(amount);
+
     }
 
     @ParameterizedTest
@@ -58,16 +53,12 @@ public class CalculatorControllerTest {
                         .queryParam("endDate", params.getEndDate())
                         .build())
                 .exchange()
-                .expectStatus().isBadRequest()
+                .expectStatus()
+                .isBadRequest()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(ValidationErrorResponse.class)
-                .consumeWith(body -> {
-                    assertEquals(message,
-                            Objects.requireNonNull(body.getResponseBody())
-                                    .getViolations()
-                                    .get(0)
-                                    .getMessage());
-                });
+                .expectBody()
+                .jsonPath("$.violations[0].message")
+                .isEqualTo(message);
     }
 
     static Stream<? extends Arguments> requestValidArgumentsProvider() {

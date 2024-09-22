@@ -3,9 +3,8 @@ package ru.neostudy.calculator.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.neostudy.calculator.config.properties.CalculatorProperties;
-import ru.neostudy.calculator.dto.VacationPaymentResponse;
 import ru.neostudy.calculator.dto.VacationPaymentRequest;
-import ru.neostudy.calculator.utils.ProductionCalendar;
+import ru.neostudy.calculator.dto.VacationPaymentResponse;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +13,7 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class VacationPayCalculatorServiceImpl implements CalculatorService {
 
-    private final ProductionCalendar productionCalendarService;
+    private final ProductionCalendarService productionCalendarService;
 
     private final CalculatorProperties properties;
 
@@ -27,8 +26,8 @@ public class VacationPayCalculatorServiceImpl implements CalculatorService {
             paidDays = request.getVacationDays();
         }
 
-        if (request.getBeginDate()!= null && request.getEndDate() != null) {
-            paidDays = productionCalendarService.getPaidVacationDays(request.getBeginDate(),request.getEndDate());
+        if (request.getBeginDate() != null && request.getEndDate() != null) {
+            paidDays = productionCalendarService.getPaidVacationDays(request.getBeginDate(), request.getEndDate());
         }
 
         BigDecimal paymentWithTax = getAvgDailyEarnings(request.getAvgSalary()).multiply(BigDecimal.valueOf(paidDays));

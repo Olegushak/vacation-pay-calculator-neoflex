@@ -2,10 +2,8 @@ package ru.neostudy.calculator.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 
-@ConstructorBinding
-@ConfigurationProperties("calculator")
+@ConfigurationProperties(prefix = "calculator")
 @Data
 public class CalculatorProperties {
 

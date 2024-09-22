@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.neostudy</groupId>
-	<artifactId>test</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>vacation-pay-calculator</artifactId>
+	<version>1.0.0</version>
 	<name>Vacation pay calculator</name>
 	<description>Test Task for Neoflex</description>
 	<url/>
