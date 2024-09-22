@@ -1,8 +1,7 @@
 package ru.neostudy.calculator.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -13,10 +12,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-public class RequestParametersDto {
+public class VacationPaymentRequest {
 
     @NotNull(message = "Set up the average salary")
     @DecimalMin(value = "0.0", inclusive = false, message = "The average salary must be greater than 0.0")
@@ -24,7 +22,7 @@ public class RequestParametersDto {
 
     @Min(value = 1, message = "The amount of vacation days must be greater than 0")
     @Max(value = 80, message = "The amount of vacation days must be less than 80")
-    private Long vacationDays;
+    private Integer vacationDays;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate beginDate;

@@ -1,17 +1,13 @@
 package ru.neostudy.calculator.exception.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Violation {
-
-    private final String field;
 
     private final String message;
 

@@ -1,6 +1,6 @@
-package ru.neostudy.calculator.services;
+package ru.neostudy.calculator.utils;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-@Service
-public class ProductionCalendarService {
+@Component
+public class ProductionCalendar {
 
     private static final int CURRENT_YEAR = LocalDate.now().getYear();
 
@@ -46,7 +46,7 @@ public class ProductionCalendarService {
     }
 
 
-    public Long getPaidVacationDays(LocalDate beginOfVacation, LocalDate endOfVacation){
+    public long getPaidVacationDays(LocalDate beginOfVacation, LocalDate endOfVacation){
         Predicate<LocalDate> paidDays = day -> isWorkDay(day) || isWeekend(day);
         return  Stream.iterate(beginOfVacation, nextDate -> nextDate.plusDays(1)).limit(ChronoUnit.DAYS.between(beginOfVacation,endOfVacation.plusDays(1)))
                 .filter(paidDays).count();
